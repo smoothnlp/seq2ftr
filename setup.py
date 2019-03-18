@@ -13,11 +13,11 @@ setuptools.setup(
     install_requires=[
         'numpy',
         'pandas',
-        "sklearn"
+        "sklearn",
         "logging"
       ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-    ],
+    ])
