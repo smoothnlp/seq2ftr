@@ -4,6 +4,8 @@ __testdata__ = {
 }
 
 from sklearn.base import TransformerMixin
+import pandas as pd
+import numpy as np
 import featre_calculators as fc
 import logging
 
@@ -29,6 +31,12 @@ class SequenceTransformer(TransformerMixin):
         pass
 
     def transform(self,x):
+        if isinstance(x,pd.Series):
+            x = self._transform_pd_series(x)
+            ftr_transformed = [self.transform(d).values() for d in x.values]
+            df_ftr = pd.DataFrame(ftr_transformed,columns=self.get_feature_names())
+            df_ftr.index = x.index
+            return df_ftr
         if not isinstance(x,dict):
             x = self._auto_type_transform(x)
         ftrs = {}
@@ -50,14 +58,15 @@ class SequenceTransformer(TransformerMixin):
         return f(v)
 
     def _transform_numpy_array(self):
-        import numpy as np
+        ## import numpy as np
         ## TODO
+        ## Numpy Transformation may not be supported
         pass
 
-    def _transform_pd_series(self):
-        import pandas as pd
+    def _transform_pd_series(self, series):
         ## TODO
-        pass
+        series = series.groupby(series.index).agg(lambda x: list(x))
+        return series
 
     def _auto_type_transform(self,x):
         if len(x)<1:
@@ -68,7 +77,7 @@ class SequenceTransformer(TransformerMixin):
         sample_x = x[0]
         if isinstance(sample_x,bool):
             xtype = 0
-        elif isinstance(sample_x,int) or isinstance(sample_x,float):
+        elif isinstance(sample_x,(int,float,np.int64,np.int32,np.float32,np.float64)):
             xtype = 1
         else:
             xtype = 2
