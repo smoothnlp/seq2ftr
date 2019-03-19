@@ -90,3 +90,4 @@ def _flucturate_rate(x:list,shift=1):
     x_shifted = _shift(x,shift)
     flucturate_vec = [xi1==xi2 for xi1,xi2 in zip(x[:-shift],x_shifted[:-shift])]
     return sum(flucturate_vec)/(len(x)-shift)
+py
