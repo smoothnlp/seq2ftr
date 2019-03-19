@@ -17,7 +17,6 @@ def listify_type(x):
 ##########################
 ## Supporting Funcitons ##
 ##########################
-
 def _shift(x:list,n:int):
     return x[n:]+x[:n]
 
@@ -26,6 +25,8 @@ def _sort(x:list):
     x_copy.sort()
     return x_copy
 global x_sorted
+
+
 
 #########################
 ## Feature Calculators ##
@@ -70,7 +71,6 @@ def _var(x:list):
     avg = _mean(x)
     return sum([(xi-avg)**2 for xi in x])/len(x)
 
-
 @set_property("name","uniqueCount","stypes",[0,1,2])
 @listify_type
 def _uniqueCount(x:list):
@@ -81,6 +81,12 @@ def _uniqueCount(x:list):
 def _len(x:list):
     return len(x)
 
-@set_property("name","num_duplicates","stypes",[0,1,2])
+@set_property("name","duplicates_count","stypes",[0,1,2])
 def _num_duplicates(x:list):
     return _len(x) - _uniqueCount(x)
+
+@set_property("name","flucturate_rate","stypes",[0,2])
+def _flucturate_rate(x:list,shift=1):
+    x_shifted = _shift(x,shift)
+    flucturate_vec = [xi1==xi2 for xi1,xi2 in zip(x[:-shift],x_shifted[:-shift])]
+    return sum(flucturate_vec)/(len(x)-shift)
