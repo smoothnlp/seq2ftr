@@ -6,12 +6,13 @@ def set_property(*args):
         return func
     return decorate_func
 
-def listify_type(x):
-    @wraps(x)
-    def listify(x):
+def listify_type(func):
+    @wraps(func)
+    def listify(*args):
+        x = args[0]
         if not isinstance(x,list):
             x = list(x)
-        return x
+        return func(x)
     return listify
 
 ##########################
@@ -57,6 +58,7 @@ def _freq_of_min(x:list):
     return len([xi for xi in x if xi<=min_x])
 
 @set_property("name",'median',"stypes",[1])
+@listify_type
 def _median(x:list):
     x_sorted = _sort(x)
     x_len = len(x_sorted)
@@ -66,7 +68,6 @@ def _median(x:list):
         return x_sorted[x_len//2]*0.5 + x_sorted[x_len//2-1]*0.5
 
 @set_property("name","variance","stypes",[0,1])
-@listify_type
 def _var(x:list):
     avg = _mean(x)
     return sum([(xi-avg)**2 for xi in x])/len(x)
@@ -86,8 +87,8 @@ def _num_duplicates(x:list):
     return _len(x) - _uniqueCount(x)
 
 @set_property("name","flucturate_rate","stypes",[0,2])
+@listify_type
 def _flucturate_rate(x:list,shift=1):
     x_shifted = _shift(x,shift)
     flucturate_vec = [xi1==xi2 for xi1,xi2 in zip(x[:-shift],x_shifted[:-shift])]
     return sum(flucturate_vec)/(len(x)-shift)
-py

@@ -1,4 +1,4 @@
 __name__ = "Ager"
-from Ager.transformer import SequenceTransformer
-from Ager import transformer
-from Ager import feature_calculators
+from ager.transformer import SequenceTransformer
+from ager import transformer
+from ager import feature_calculators

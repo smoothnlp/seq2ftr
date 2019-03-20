@@ -6,7 +6,7 @@ __testdata__ = {
 from sklearn.base import TransformerMixin
 import pandas as pd
 import numpy as np
-import Ager.feature_calculators as fc
+import ager.feature_calculators as fc
 import logging
 
 class SequenceTransformer(TransformerMixin):
