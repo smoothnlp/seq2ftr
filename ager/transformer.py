@@ -10,7 +10,7 @@ import ager.feature_calculators as fc
 import logging
 
 class SequenceTransformer(TransformerMixin):
-    def __init__(self,calculators:list = None):
+    def __init__(self,calculators:list = None,auto_adapt = True):
         all_fns = {getattr(fc,fn).__dict__['name']:getattr(fc,fn) for fn in dir(fc) if callable(getattr(fc,fn)) and 'name' in getattr(fc,fn).__dict__}
         self.logger = logging.getLogger()
         if calculators is None:
@@ -22,6 +22,11 @@ class SequenceTransformer(TransformerMixin):
                     self.logger.warning("calculator {} is not supported in the latest version of feature calculators".format(c))
                 else:
                     self.fns[c] = all_fns[c]
+        self.auto_adapt = auto_adapt
+        if self.auto_adapt:
+            fname2stypes = {fname:func.__dict__['stypes'] for fname,func in self.fns.items()}
+            get_stype_fnames = lambda t: [fname for fname,stypes in fname2stypes.items() if t in stypes]
+            self.type_fns = {k:get_stype_fnames(k) for k in range(3)}
         self.valid_fnames = list(self.fns.keys())
 
     def get_feature_names(self):
@@ -39,8 +44,13 @@ class SequenceTransformer(TransformerMixin):
             return df_ftr
         if not isinstance(x,dict):
             x = self._auto_type_transform(x)
+
         ftrs = {}
-        for fname in self.fns:
+        if not self.auto_adapt:
+            executing_fns = self.fns.keys()
+        else:
+            executing_fns = self.type_fns[x['type']]
+        for fname in executing_fns:
             if self._check_stype(fname,x):
                 ftrs[fname] = (self._transform_fn(fname,x['value']))
         self.valid_fnames = list(ftrs.keys())

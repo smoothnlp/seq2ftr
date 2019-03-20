@@ -27,6 +27,11 @@ def _sort(x:list):
     return x_copy
 global x_sorted
 
+def _appearance_count(x:list):
+    freq = {k:0 for k in set(x)}
+    for xi in x:
+        freq[xi]+=1
+    return freq
 
 
 #########################
@@ -67,6 +72,15 @@ def _median(x:list):
     else:
         return x_sorted[x_len//2]*0.5 + x_sorted[x_len//2-1]*0.5
 
+@set_property("name","median_mean_distance","stypes",[1])
+def _median_mean_distance(x:list):
+    return abs(_mean(x)-_median(x))/(_max(x)-_min(x))
+
+@set_property("name","percentage_below_mean","stypes",[1])
+def _percentage_below_mean(x:list):
+    x_mean = _mean(x)
+    return len([xi for xi in x if xi<x_mean])/_len(x)
+
 @set_property("name","variance","stypes",[0,1])
 def _var(x:list):
     avg = _mean(x)
@@ -92,3 +106,6 @@ def _flucturate_rate(x:list,shift=1):
     x_shifted = _shift(x,shift)
     flucturate_vec = [xi1==xi2 for xi1,xi2 in zip(x[:-shift],x_shifted[:-shift])]
     return sum(flucturate_vec)/(len(x)-shift)
+
+
+
