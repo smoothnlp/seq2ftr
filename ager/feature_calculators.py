@@ -32,6 +32,7 @@ def _appearance_count(x:list):
     for xi in x:
         freq[xi]+=1
     return freq
+global x_freq_count
 
 
 #########################
@@ -107,5 +108,14 @@ def _flucturate_rate(x:list,shift=1):
     flucturate_vec = [xi1==xi2 for xi1,xi2 in zip(x[:-shift],x_shifted[:-shift])]
     return sum(flucturate_vec)/(len(x)-shift)
 
+@set_property("name","percentage_of_most_reoccuring_value_to_all_values","stypes",[1,2])
+@listify_type
+def _percentage_of_most_reoccuring_value_to_all_values(x:list):
+    x_freq_count = _appearance_count(x)
+    return 1/len(x_freq_count)
 
-
+@set_property("name","percentage_of_most_reoocuring_value_to_all_datapoints","stypes",[1,2])
+@listify_type
+def _percentage_of_most_reoocuring_value_to_all_datapoints(x:list):
+    x_freq_count = _appearance_count(x)
+    return max(x_freq_count.values()) / len(x)
