@@ -1,6 +1,7 @@
 __testdata__ = {
     "type":1,  # 0 for boolean, 1 for numericla, 2 for categorical
-    "value":[1,2,3]
+    "value":[1,2,3],
+    "name":"sample_ftr",
 }
 
 from sklearn.base import TransformerMixin
@@ -54,6 +55,8 @@ class SequenceTransformer(TransformerMixin):
             if self._check_stype(fname,x):
                 ftrs[fname] = (self._transform_fn(fname,x['value']))
         self.valid_fnames = list(ftrs.keys())
+        if "name" in x.keys():
+            ftrs = {".".join([x['name'],key]):value for key,value in ftrs.items()}
         return ftrs
 
     def _check_stype(self,fname,x):
@@ -95,4 +98,6 @@ class SequenceTransformer(TransformerMixin):
 
 
 
-
+# st = SequenceTransformer()
+# res = st.transform(__testdata__)
+# print(res)
