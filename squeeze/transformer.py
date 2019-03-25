@@ -11,7 +11,18 @@ import squeeze.feature_calculators as fc
 import logging
 
 class SequenceTransformer(TransformerMixin):
+    """
+    Implemented Sklearn.base.TransformerMinMax for similar usage as sklearn.preprocessing.*transformers
+    """
     def __init__(self,calculators:list = None,auto_adapt = True):
+        """
+        Constructtor
+        :param calculators: You may specific a list of calculators' name for execution,
+                            By default, all applicable functions are used.
+        :param auto_adapt: the type (bool/numerical/categorical) of input X is
+                            automatically detected by default, you may change to False accordingly,
+                            warnings will be raised if the input x data type is not supported for calculators.
+        """
         all_fns = {getattr(fc,fn).__dict__['name']:getattr(fc,fn) for fn in dir(fc) if callable(getattr(fc,fn)) and 'name' in getattr(fc,fn).__dict__}
         self.logger = logging.getLogger()
         if calculators is None:
@@ -31,12 +42,36 @@ class SequenceTransformer(TransformerMixin):
         self.valid_fnames = list(self.fns.keys())
 
     def get_feature_names(self):
+        """
+        get feature names
+        :return:
+        """
         return list(self.valid_fnames)
 
     def fit(self,x:dict,y=None):
+        """
+        This is temporarally unimplemented until smoothnlp.learner is developed
+        :param x:
+        :param y:
+        :return:
+        """
         pass
 
     def transform(self,x):
+        """
+        A predefined data-format of x is transformed to feature
+
+        sample input:
+
+            __testdata__ = {
+                "type":1,  # 0 for boolean, 1 for numericla, 2 for categorical
+                "value":[1,2,3],
+                "name":"sample_ftr",
+            }
+
+        :param x:
+        :return:
+        """
         if isinstance(x,pd.Series):
             x = self._transform_pd_series(x)
             ftr_transformed = [self.transform(d).values() for d in x.values]
@@ -64,6 +99,12 @@ class SequenceTransformer(TransformerMixin):
         return ftrs
 
     def _check_stype(self,fname,x):
+        """
+        check support types of a specific function, if unsupported raise warning
+        :param fname:
+        :param x:
+        :return:
+        """
         fn_stypes = getattr(self.fns[fname],"stypes")
         if x['type'] not in fn_stypes:
             self.logger.critical("There is a mismatch between input X and calculator({}) supporting types".format(fname))
@@ -86,6 +127,11 @@ class SequenceTransformer(TransformerMixin):
         return series
 
     def _auto_type_transform(self,x):
+        """
+        if x is input merely as a list of values, x's type is automatically detected
+        :param x:
+        :return:
+        """
         if len(x)<1:
             error_msg = "Input X has invalid length: {}".format(len(x))
             self.logger.critical(error_msg)
@@ -100,8 +146,3 @@ class SequenceTransformer(TransformerMixin):
             xtype = 2
         return {"type":xtype,"value":x}
 
-
-
-# st = SequenceTransformer()
-# res = st.transform(__testdata__)
-# print(res)

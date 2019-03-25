@@ -1,5 +1,13 @@
 from functools import wraps
 def set_property(*args):
+    """
+    The decorators for set properties for individual feature calculators
+    :param args:
+        name: the function's name for display
+        stype: the supporting types for the feature calculating function
+             0 for boolean, 1 for numericla, 2 for categorical
+    :return:
+    """
     def decorate_func(func):
         for i in range(0,len(args),2):
             setattr(func, args[i], args[i+1])
@@ -7,6 +15,11 @@ def set_property(*args):
     return decorate_func
 
 def listify_type(func):
+    """
+    Decorator for casting input to list
+    :param func:
+    :return:
+    """
     @wraps(func)
     def listify(*args):
         x = args[0]
@@ -19,6 +32,12 @@ def listify_type(func):
 ## Supporting Funcitons ##
 ##########################
 def _shift(x:list,n:int):
+    """
+    works similar to np.roll
+    :param x:
+    :param n:
+    :return:
+    """
     return x[n:]+x[:n]
 
 def _sort(x:list):
@@ -28,6 +47,11 @@ def _sort(x:list):
 global x_sorted
 
 def _appearance_count(x:list):
+    """
+    get frequency count
+    :param x:
+    :return:
+    """
     freq = {k:0 for k in set(x)}
     for xi in x:
         freq[xi]+=1
