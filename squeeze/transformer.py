@@ -40,7 +40,11 @@ class SequenceTransformer(TransformerMixin):
         if isinstance(x,pd.Series):
             x = self._transform_pd_series(x)
             ftr_transformed = [self.transform(d).values() for d in x.values]
-            df_ftr = pd.DataFrame(ftr_transformed,columns=self.get_feature_names())
+            if x.name:
+                col_names = [".".join([x.name,fname]) for fname in self.get_feature_names()]
+            else:
+                col_names = self.get_feature_names()
+            df_ftr = pd.DataFrame(ftr_transformed,columns=col_names)
             df_ftr.index = x.index
             return df_ftr
         if not isinstance(x,dict):
