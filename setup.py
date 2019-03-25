@@ -1,14 +1,14 @@
 import setuptools
 
 setuptools.setup(
-    name="ager",
+    name="squeeze",
     version="0.1",
     author="Ruinan(Victor) Zhang",
     author_email="ruinan.zhang@icloud.com",
     description="A Nice and Convenient Feature Engineering Tool on Sequential Data",
     long_description="",
     long_description_content_type="text/markdown",
-    url="https://github.com/zhangruinan/Ager",
+    url="https://github.com/smoothnlp/Squeeze",
     packages=setuptools.find_packages(),
     install_requires=[
         'numpy',
