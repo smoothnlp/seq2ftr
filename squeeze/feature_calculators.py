@@ -143,3 +143,46 @@ def _percentage_of_most_reoccuring_value_to_all_values(x:list):
 def _percentage_of_most_reoocuring_value_to_all_datapoints(x:list):
     x_freq_count = _appearance_count(x)
     return max(x_freq_count.values()) / len(x)
+
+@set_property("name","last_location_of_max","stypes",[1])
+def _last_location_of_max(x:list):
+    xmax = _max(x)
+    for i in range(1,len(x)+1):
+        if x[-i] == xmax:
+            return i
+
+@set_property("name","fist_location_of_max","stypes",[1])
+def _first_location_of_max(x:list):
+    xmax = _max(x)
+    for i in range(len(x)):
+        if x[i] == xmax:
+            return i
+
+@set_property("name","last_location_of_min","stypes",[1])
+def _last_location_of_min(x:list):
+    xmin = _min(x)
+    for i in range(1,len(x)+1):
+        if x[-i] == xmin:
+            return i
+
+@set_property("name","fist_location_of_min","stypes",[1])
+def _first_location_of_min(x:list):
+    xmin = _min(x)
+    for i in range(len(x)):
+        if x[i] == xmin:
+            return i
+
+@set_property("name","ratio_value_number_to_seq_length",[1,2])
+def _ratio_value_number_to_seq_length(x:list):
+    return len(set(x))/_len(x)
+
+@set_property("name","_number_peaks",[1])
+@listify_type
+def _number_peaks(x,n=1):
+    counter = 0
+    for i in range(n,len(x)-n):
+        neighbors=[x[i-j] for j in range(1,n+1)] + [x[i+j] for j in range(1,n+1)]
+        if x[i] > max(neighbors):
+            counter+=1
+    return counter
+
