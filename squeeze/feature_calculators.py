@@ -165,7 +165,7 @@ def _last_location_of_min(x:list):
         if x[-i] == xmin:
             return i
 
-@set_property("name","fist_location_of_min","stypes","stypes",[1])
+@set_property("name","fist_location_of_min","stypes",[1])
 def _first_location_of_min(x:list):
     xmin = _min(x)
     for i in range(len(x)):
