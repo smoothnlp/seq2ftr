@@ -1,4 +1,4 @@
-__name__ = "Squeeze"
+__name__ = "squeeze"
 from squeeze.transformer import SequenceTransformer
 from squeeze import transformer
 from squeeze import feature_calculators
