@@ -165,18 +165,18 @@ def _last_location_of_min(x:list):
         if x[-i] == xmin:
             return i
 
-@set_property("name","fist_location_of_min","stypes",[1])
+@set_property("name","fist_location_of_min","stypes","stypes",[1])
 def _first_location_of_min(x:list):
     xmin = _min(x)
     for i in range(len(x)):
         if x[i] == xmin:
             return i
 
-@set_property("name","ratio_value_number_to_seq_length",[1,2])
+@set_property("name","ratio_value_number_to_seq_length","stypes",[1,2])
 def _ratio_value_number_to_seq_length(x:list):
     return len(set(x))/_len(x)
 
-@set_property("name","_number_peaks",[1])
+@set_property("name","_number_peaks","stypes",[1])
 @listify_type
 def _number_peaks(x,n=1):
     counter = 0

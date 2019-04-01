@@ -84,6 +84,8 @@ class SequenceTransformer(TransformerMixin):
             return df_ftr
         if not isinstance(x,dict):
             x = self._auto_type_transform(x)
+        if "type" not in x.keys():
+            x = self._auto_type_transform(x)
 
         ftrs = {}
         if not self.auto_adapt:
@@ -128,21 +130,29 @@ class SequenceTransformer(TransformerMixin):
 
     def _auto_type_transform(self,x):
         """
-        if x is input merely as a list of values, x's type is automatically detected
+        if x is input merely as a list of values or a dict of input format without type indicator,
+        x's type is automatically detected
         :param x:
         :return:
         """
-        if len(x)<1:
-            error_msg = "Input X has invalid length: {}".format(len(x))
-            self.logger.critical(error_msg)
-            raise Exception(error_msg)
-        x = list(x) if not isinstance(x,list) else x
-        sample_x = x[0]
-        if isinstance(sample_x,bool):
-            xtype = 0
-        elif isinstance(sample_x,(int,float,np.int64,np.int32,np.float32,np.float64)):
-            xtype = 1
-        else:
-            xtype = 2
-        return {"type":xtype,"value":x}
+        if isinstance(x,list):
+            if len(x)<1:
+                error_msg = "Input X has invalid length: {}".format(len(x))
+                self.logger.critical(error_msg)
+                raise Exception(error_msg)
+            x = list(x) if not isinstance(x,list) else x
+            sample_x = x[0]
+            if isinstance(sample_x,bool):
+                xtype = 0
+            elif isinstance(sample_x,(int,float,np.int64,np.int32,np.float32,np.float64)):
+                xtype = 1
+            else:
+                xtype = 2
+            return {"type":xtype,"value":x}
+        elif isinstance(x,dict):
+            if "name" not in x:
+                self.logger.warning("A sequence's name is highly recommended for multiple sequence modeling")
+            transformed_result = self._auto_type_transform(x['value'])
+            transformed_result['name'] = x['name']
+            return transformed_result
 
