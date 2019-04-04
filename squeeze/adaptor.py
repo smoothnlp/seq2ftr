@@ -53,8 +53,11 @@ class adapator():
         seqs = {k:{"name":k,"value":[]} for k in valid_val_ftrs}
         for x_i in x:
             if not isinstance(x_i,dict):
-                self.logger.warning("each element in x should be dict, instead get: {}".format(str(type(x_i))))
+                raise TypeError("each element in x should be dict, instead get: {}".format(str(type(x_i))))
             for fname in valid_val_ftrs:
+                if fname not in x_i:
+                    # self.logger.warning("{} is not in every element of the input x.".format(fname))
+                    continue
                 seqs[fname]['value'].append(_auto_xval_type_convert(x_i[fname]))
         return seqs
 
@@ -66,6 +69,6 @@ class adapator():
 
 
 smoothnlp_learner_adaptor = adapator(index_ftrs=['charStart',"charEnd","tokenIndex"],
-                                     val_ftrs=['re','le',"pmi",'phrase_score',"textRankScore",""])
+                                     val_ftrs=['re','le',"pmi",'phrase_score',"textRankScore","token"])
 
 
