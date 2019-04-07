@@ -205,8 +205,7 @@ def _skewness(x:list):
             return 0
         else:
             result = (count * (count -1) ** 0.5 / (count - 2)) * (m3 / m2 ** 1.5)
-
-    return result
+            return round(result, 6)
 
 @set_property("name","kurtosis", "stypes", [1])
 @listify_type
@@ -228,5 +227,5 @@ def _kurtosis(x:list):
         if denom == 0:
             return 0
         else:
-            return round(numer/denom - adj,4)
+            return round(numer/denom - adj, 6)
 
