@@ -209,6 +209,25 @@ def _skewness(x:list):
 
     return result
 
+@set_property("name","kurtosis", "stypes", [1])
+@listify_type
+def _kurtosis(x:list):
+    avg = _mean(x)
+    count = len(x)
+    adjusted = np.array(x) - avg
+    adjusted2 = adjusted ** 2
+    adjusted4 = adjusted2 ** 2
+    m2 = adjusted2.sum()
+    m4 = adjusted4.sum()
 
-
+    if count<4:
+        return np.nan
+    else:
+        adj = 3 * (count -1) ** 2 / ((count -2) * (count-3))
+        numer = count * (count + 1) * (count - 1) * m4
+        denom = (count - 2) * (count - 3) * m2 ** 2
+        if denom == 0:
+            return 0
+        else:
+            return numer/denom - adj
 
