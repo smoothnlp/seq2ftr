@@ -1,3 +1,5 @@
+import hashlib
+import numpy as np
 from functools import wraps
 def set_property(*args):
     """
@@ -185,4 +187,28 @@ def _number_peaks(x,n=1):
         if x[i] > max(neighbors):
             counter+=1
     return counter
+
+@set_property("name", "skewness", "stypes", [1])
+@listify_type
+def _skewness(x:list):
+    avg = _mean(x)
+    adjusted = np.array(x) - avg
+    count = len(x)
+    adjusted2 = adjusted ** 2
+    adjusted3 = adjusted2 * adjusted
+    m2 = adjusted2.sum()
+    m3 = adjusted3.sum()
+
+    if count<3:
+        return np.nan
+    else:
+        if m2 == 0:
+            return 0
+        else:
+            result = (count * (count -1) ** 0.5 / (count - 2)) * (m3 / m2 ** 1.5)
+
+    return result
+
+
+
 
