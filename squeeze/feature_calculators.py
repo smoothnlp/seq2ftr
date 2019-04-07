@@ -1,5 +1,4 @@
 import hashlib
-import numpy as np
 from functools import wraps
 def set_property(*args):
     """
@@ -192,15 +191,15 @@ def _number_peaks(x,n=1):
 @listify_type
 def _skewness(x:list):
     avg = _mean(x)
-    adjusted = np.array(x) - avg
+    adjusted = [v - avg for v in x]
     count = len(x)
-    adjusted2 = adjusted ** 2
-    adjusted3 = adjusted2 * adjusted
-    m2 = adjusted2.sum()
-    m3 = adjusted3.sum()
+    adjusted2 = [pow(v,2) for v in adjusted]
+    adjusted3 = [adjusted2[i] * adjusted[i] for i in range(len(adjusted))]
+    m2 = sum(adjusted2)
+    m3 = sum(adjusted3)
 
     if count<3:
-        return np.nan
+        return None
     else:
         if m2 == 0:
             return 0
@@ -214,14 +213,14 @@ def _skewness(x:list):
 def _kurtosis(x:list):
     avg = _mean(x)
     count = len(x)
-    adjusted = np.array(x) - avg
-    adjusted2 = adjusted ** 2
-    adjusted4 = adjusted2 ** 2
-    m2 = adjusted2.sum()
-    m4 = adjusted4.sum()
+    adjusted = [v - avg for v in x]
+    adjusted2 = [pow(v,2) for v in adjusted]
+    adjusted4 = [pow(v,2) for v in adjusted2]
+    m2 = sum(adjusted2)
+    m4 = sum(adjusted4)
 
     if count<4:
-        return np.nan
+        return None
     else:
         adj = 3 * (count -1) ** 2 / ((count -2) * (count-3))
         numer = count * (count + 1) * (count - 1) * m4
@@ -229,5 +228,5 @@ def _kurtosis(x:list):
         if denom == 0:
             return 0
         else:
-            return numer/denom - adj
+            return round(numer/denom - adj,4)
 
