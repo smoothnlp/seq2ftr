@@ -107,10 +107,14 @@ def _percentage_below_mean(x:list):
     x_mean = _mean(x)
     return len([xi for xi in x if xi<x_mean])/_len(x)
 
-@set_property("name","variance","stypes",[0,1])
+@set_property("name","variance","stypes",[1])
 def _var(x:list):
     avg = _mean(x)
     return sum([(xi-avg)**2 for xi in x])/len(x)
+
+@set_property("name","standard_deviation","stypes",[1])
+def _std(x:list):
+    return _var(x)**(0.5)
 
 @set_property("name","uniqueCount","stypes",[0,1,2])
 @listify_type

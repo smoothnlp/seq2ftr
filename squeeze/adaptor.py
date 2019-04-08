@@ -68,8 +68,9 @@ class adapator():
         return list(index_leftover_ftrs)
 
 
-smoothnlp_learner_adaptor = adapator(index_ftrs=['charStart',"charEnd","tokenIndex"],
+smoothnlp_document_token_adaptor = adapator(index_ftrs=['charStart',"charEnd","tokenIndex"],
                                      val_ftrs=['re','le',"pmi",'phrase_score',"textRankScore","token"])
 
-tb_adaptor = adapator(index_ftrs=["sellerNick"],
-                               val_ftrs=["actualFee","province"])
+smoothnlp_money_ner_adaptor = adapator(index_ftrs=['charStart',"charEnd"],
+                                     val_ftrs=['sourceToken',"moneyNormalizedAmount"])
+
