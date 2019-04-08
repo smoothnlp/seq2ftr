@@ -156,3 +156,42 @@ class SequenceTransformer(TransformerMixin):
             transformed_result['name'] = x['name']
             return transformed_result
 
+
+class MultiSequenceTransformer(TransformerMixin):
+    def __init__(self,seqname2transformers = {}):
+        self.seqname2transformers = seqname2transformers
+        self.logger = logging.getLogger()
+
+
+    def fit(self,X:dict,y = None):
+        if isinstance(X,dict):
+            x_keys = X.keys()
+            for x_key in x_keys:
+                if x_key not in self.seqname2transformers:
+                    self.seqname2transformers[x_key] = SequenceTransformer()
+                    self.seqname2transformers[x_key].fit(X[x_key])
+        if isinstance(X,list):
+            for xi in X:
+                self.fit(xi)
+
+    def transform(self,X):
+        if isinstance(X,dict):
+            x_res = {}
+            for x_key,x_item in X.items():
+                if x_key not in self.seqname2transformers:
+                    self.logger.critical("sequence with name '{}' is not fitted, therefore may not be transformer.".format(x_key))
+                    continue
+                x_res = {**x_res,**self.seqname2transformers[x_key].transform(x_item)}
+            return x_res
+        if isinstance(X,list):
+            return [self.transform(xi) for xi in X]
+
+
+_multi_test_data = {'sourceToken': {'name': 'sourceToken',
+  'value': ['支出', '申请', '支付', '发', '消费', '剩余', 'unknown', '剩余', '借']},
+ 'moneyNormalizedAmount': {'name': 'moneyNormalizedAmount',
+  'value': [2350.6, 5000, 1400, 2000, 148, 475.25, 400, 1475.23, 300]}}
+
+mst = MultiSequenceTransformer()
+mst.fit(_multi_test_data)
+print(mst.transform(_multi_test_data))
