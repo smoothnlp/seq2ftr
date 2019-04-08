@@ -187,11 +187,11 @@ class MultiSequenceTransformer(TransformerMixin):
             return [self.transform(xi) for xi in X]
 
 
-_multi_test_data = {'sourceToken': {'name': 'sourceToken',
-  'value': ['支出', '申请', '支付', '发', '消费', '剩余', 'unknown', '剩余', '借']},
- 'moneyNormalizedAmount': {'name': 'moneyNormalizedAmount',
-  'value': [2350.6, 5000, 1400, 2000, 148, 475.25, 400, 1475.23, 300]}}
-
-mst = MultiSequenceTransformer()
-mst.fit(_multi_test_data)
-print(mst.transform(_multi_test_data))
+# _multi_test_data = {'sourceToken': {'name': 'sourceToken',
+#   'value': ['支出', '申请', '支付', '发', '消费', '剩余', 'unknown', '剩余', '借']},
+#  'moneyNormalizedAmount': {'name': 'moneyNormalizedAmount',
+#   'value': [2350.6, 5000, 1400, 2000, 148, 475.25, 400, 1475.23, 300]}}
+#
+# mst = MultiSequenceTransformer()
+# mst.fit(_multi_test_data)
+# print(mst.transform(_multi_test_data))
