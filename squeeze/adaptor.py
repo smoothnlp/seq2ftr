@@ -71,4 +71,5 @@ class adapator():
 smoothnlp_learner_adaptor = adapator(index_ftrs=['charStart',"charEnd","tokenIndex"],
                                      val_ftrs=['re','le',"pmi",'phrase_score',"textRankScore","token"])
 
-
+taobao_data_adaptor = adapator(index_ftrs=["sellerNick"],
+                               val_ftrs=["actualFee","province"])
