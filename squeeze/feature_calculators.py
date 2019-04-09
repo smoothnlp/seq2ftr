@@ -67,10 +67,8 @@ def _token_hash(x):
     """
     if isinstance(x, str):
         x_md5 = hashlib.md5(x.encode("utf-8")).hexdigest()
-        y = 0
-        for v in list(x_md5):
-            if v.isdigit():
-                y+=int(v)
+        y = [int(v) for v in list(x) if v.isdigit()]
+        y = sum(y)
         x_hash = hash(y)
     else:
         x_hash = hash(x)
