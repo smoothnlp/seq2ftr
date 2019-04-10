@@ -59,6 +59,21 @@ def _appearance_count(x:list):
     return freq
 global x_freq_count
 
+def _token_hash(x):
+    """
+    get input hash result
+    :param key:
+    :return:
+    """
+    if isinstance(x, str):
+        x_md5 = hashlib.md5(x.encode("utf-8")).hexdigest()
+        y = [int(v) for v in list(x) if v.isdigit()]
+        y = sum(y)
+        x_hash = hash(y)
+    else:
+        x_hash = hash(x)
+    return x_hash
+
 
 #########################
 ## Feature Calculators ##
@@ -266,3 +281,10 @@ def _mean_change(x):
     return _min(x_diff)
 
 
+@set_property("name","categorical_max_freq_key_hash_code", "stypes", [2])
+@listify_type
+def _categorical_max_freq_key_hash_code(x:list):
+    x_freq_count = _appearance_count(x)
+    x_freq_count_sort = sorted(x_freq_count.items(), key=lambda d: d[1],reverse=True)
+    x_max_freq_key = x_freq_count_sort[0][0]
+    return _token_hash(x_max_freq_key)
