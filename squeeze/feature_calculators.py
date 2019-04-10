@@ -59,7 +59,7 @@ def _appearance_count(x:list):
     return freq
 global x_freq_count
 
-def _token_hash(x):
+def _token_hash(x:list):
     """
     get input hash result
     :param key:
@@ -73,6 +73,11 @@ def _token_hash(x):
     else:
         x_hash = hash(x)
     return x_hash
+
+def _z_transform(x:list):
+    xmean = _mean(x)
+    xstd = _std(x)
+    return [(xi-xmean)/xstd for xi in x]
 
 
 #########################
@@ -268,6 +273,20 @@ def _abs_energy(x:list):
     """
     return sum([xi**2 for xi in x])
 
+@set_property("name","cid_ce","stypes",[1])
+def _cid_ce(x:list):
+    """
+    .. math::
+        \\sqrt{ \\sum_{i=0}^{n-2lag} ( x_{i} - x_{i+1})^2 }
+    .. rubric:: References
+    |  [1] Batista, Gustavo EAPA, et al (2014).
+    |  CID: an efficient complexity-invariant distance for time series.
+    :param x:
+    :return:
+    """
+    x_z_transformed = _z_transform(x)
+    return _abs_energy(x_z_transformed)**(0.5)
+
 @set_property("name","mean_change","stypes",[1])
 def _mean_change(x):
     x_rolled = _shift(x,1)
@@ -281,10 +300,56 @@ def _mean_change(x):
     return _min(x_diff)
 
 
+@set_property("name","_ndex_mass_quantile_25","stypes",[1])
+def _index_mass_quantile(x:list,percentile = 0.25):
+    quantile_value = sum(x)*percentile
+    xlen = len(x)
+    cumsum = 0;
+    sign_flag = (quantile_value>=0)
+    for i,xval in enumerate(x):
+        cumsum+=xval
+        if (sign_flag and cumsum>quantile_value) or ((not sign_flag) and cumsum<quantile_value):
+            return i/xlen
+    return 0
+
+@set_property("name","ndex_mass_quantile_50","stypes",[1])
+def _idnex_mass_quantile_50(x):
+    return _index_mass_quantile(x,0.5)
+
+@set_property("name","ndex_mass_quantile_75","stypes",[1])
+def _idnex_mass_quantile_75(x):
+    return _index_mass_quantile(x,0.75)
+
+
+
 @set_property("name","categorical_max_freq_key_hash_code", "stypes", [2])
 @listify_type
 def _categorical_max_freq_key_hash_code(x:list):
     x_freq_count = _appearance_count(x)
-    x_freq_count_sort = sorted(x_freq_count.items(), key=lambda d: d[1],reverse=True)
-    x_max_freq_key = x_freq_count_sort[0][0]
+    x_max_freq_key = [xkey for xkey,xval in x_freq_count.items() if xval == max(x_freq_count.values())][0]
+    # x_freq_count_sort = sorted(x_freq_count.items(), key=lambda d: d[1],reverse=True)
+    # x_max_freq_keyax_freq_key = x_freq_count_sort[0][0]
     return _token_hash(x_max_freq_key)
+
+@set_property("name","categorical_min_freq_key_hash_code", "stypes", [2])
+@listify_type
+def _categorical_min_freq_key_hash_code(x:list):
+    x_freq_count = _appearance_count(x)
+    x_min_freq_key = [xkey for xkey,xval in x_freq_count.items() if xval == max(x_freq_count.values())][0]
+    return _token_hash(x_min_freq_key)
+
+
+
+#### TODO #####
+"""
+fft_coefficient
+Calculates the fourier coefficients of the one-dimensional discrete Fourier Transform for real input by fast
+    fourier transformation algorithm
+    .. math::
+        A_k =  \\sum_{m=0}^{n-1} a_m \\exp \\left \\{ -2 \\pi i \\frac{m k}{n} \\right \\}, \\qquad k = 0,
+        \\ldots , n-1.
+"""
+
+"""
+entropy
+"""
