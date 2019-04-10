@@ -128,7 +128,7 @@ def _len(x:list):
 
 @set_property("name","duplicates_count","stypes",[0,1,2])
 def _num_duplicates(x:list):
-    return _len(x) - _uniqueCount(x)
+    return _len(x) - _uniqueCount(x)+1
 
 @set_property("name","flucturate_rate","stypes",[0,2])
 @listify_type
@@ -181,7 +181,7 @@ def _first_location_of_min(x:list):
 def _ratio_value_number_to_seq_length(x:list):
     return len(set(x))/_len(x)
 
-@set_property("name","_number_peaks","stypes",[1])
+@set_property("name","number_peaks_1","stypes",[1])
 @listify_type
 def _number_peaks(x,n=1):
     counter = 0
@@ -190,6 +190,15 @@ def _number_peaks(x,n=1):
         if x[i] > max(neighbors):
             counter+=1
     return counter
+
+@set_property("name","number_peaks_2","stypes",[1])
+def _number_peaks2(x:list):
+    return _number_peaks(x,2)
+
+
+@set_property("name","number_peaks_3","stypes",[1])
+def _number_peaks3(x:list):
+    return _number_peaks(x,3)
 
 @set_property("name", "skewness", "stypes", [1])
 @listify_type
@@ -232,4 +241,28 @@ def _kurtosis(x:list):
             return 0
         else:
             return round(numer/denom - adj, 6)
+
+@set_property("name","abs_energy","stypes",[1])
+@listify_type
+def _abs_energy(x:list):
+    """
+      .. math::
+        E = \\sum_{i=1,\ldots, n} x_i^2
+    :param x:
+    :return:
+    """
+    return sum([xi**2 for xi in x])
+
+@set_property("name","mean_change","stypes",[1])
+def _mean_change(x):
+    x_rolled = _shift(x,1)
+    x_diff = [xi-xj for xi,xj in zip(x,x_rolled)]
+    return _mean(x_diff)
+
+@set_property("name","min_change","stypes",[1])
+def _mean_change(x):
+    x_rolled = _shift(x,1)
+    x_diff = [xi-xj for xi,xj in zip(x,x_rolled)]
+    return _min(x_diff)
+
 
