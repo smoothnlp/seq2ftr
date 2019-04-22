@@ -353,3 +353,6 @@ Calculates the fourier coefficients of the one-dimensional discrete Fourier Tran
 """
 entropy
 """
+"""
+Linear model coefficients
+"""
