@@ -83,9 +83,16 @@ class SequenceTransformer(TransformerMixin):
             df_ftr.index = x.index
             return df_ftr
         if not isinstance(x,dict):
-            x = self._auto_type_transform(x)
+            try:
+                x = self._auto_type_transform(x)
+            except IndexError:
+                return None
         if "type" not in x.keys():
             x = self._auto_type_transform(x)
+
+        if len(x['value'])<1:
+            self.logger.fatal("sequence input is empty")
+            return None
 
         ftrs = {}
         if not self.auto_adapt:
@@ -115,7 +122,10 @@ class SequenceTransformer(TransformerMixin):
 
     def _transform_fn(self,fname,v):
         f = self.fns[fname]
-        return f(v)
+        try:
+            return f(v)
+        except ZeroDivisionError:
+            return 0
 
     def _transform_numpy_array(self):
         ## import numpy as np
@@ -139,7 +149,7 @@ class SequenceTransformer(TransformerMixin):
             if len(x)<1:
                 error_msg = "Input X has invalid length: {}".format(len(x))
                 self.logger.critical(error_msg)
-                raise Exception(error_msg)
+                raise IndexError(error_msg)
             x = list(x) if not isinstance(x,list) else x
             sample_x = x[0]
             if isinstance(sample_x,bool):
