@@ -384,7 +384,7 @@ def _categorical_min_freq_key_hash_code(x:list):
     x_min_freq_key = [xkey for xkey,xval in x_freq_count.items() if xval == max(x_freq_count.values())][0]
     return _token_hash(x_min_freq_key)
 
-@set_property("name","none_rate", "stypes",[2])
+@set_property("name","none_rate", "stypes",[0,1,2])
 @listify_type
 def _none_rate(x:list):
     return len([a for a in x if a is not None])/len(x)
