@@ -29,6 +29,19 @@ def listify_type(func):
         return func(x)
     return listify
 
+def filter_none(func):
+    """
+    filter None value in input list
+    :param func:
+    :return:
+    """
+    @wraps(func)
+    def filterfunc(*args):
+        x = args[0]
+        x = [a for a in x if a is not None]
+        return func(x)
+    return filterfunc
+
 ##########################
 ## Supporting Funcitons ##
 ##########################
@@ -85,31 +98,37 @@ def _z_transform(x:list):
 #########################
 @set_property("name","mean","stypes",[0,1])
 @listify_type
+@filter_none
 def _mean(x:list):
     return sum(x)/len(x)
 
 @set_property("name","max","stypes",[0,1])
 @listify_type
+@filter_none
 def _max(x:list):
     return max(x)
 
 @set_property("name","freq_of_max","stypes",[1])
+@filter_none
 def _freq_of_max(x:list):
     max_x = _max(x)
     return len([xi for xi in x if xi >=max_x])
 
 @set_property("name","min","stypes",[0,1])
 @listify_type
+@filter_none
 def _min(x:list):
     return min(x)
 
 @set_property("name","freq_of_min","stypes",[1])
+@filter_none
 def _freq_of_min(x:list):
     min_x = _min(x)
     return len([xi for xi in x if xi<=min_x])
 
 @set_property("name",'median',"stypes",[1])
 @listify_type
+@filter_none
 def _median(x:list):
     x_sorted = _sort(x)
     x_len = len(x_sorted)
@@ -119,39 +138,47 @@ def _median(x:list):
         return x_sorted[x_len//2]*0.5 + x_sorted[x_len//2-1]*0.5
 
 @set_property("name","median_mean_distance","stypes",[1])
+@filter_none
 def _median_mean_distance(x:list):
     return abs(_mean(x)-_median(x))/(_max(x)-_min(x))
 
 @set_property("name","percentage_below_mean","stypes",[1])
+@filter_none
 def _percentage_below_mean(x:list):
     x_mean = _mean(x)
     return len([xi for xi in x if xi<x_mean])/_len(x)
 
 @set_property("name","variance","stypes",[1])
+@filter_none
 def _var(x:list):
     avg = _mean(x)
     return sum([(xi-avg)**2 for xi in x])/len(x)
 
 @set_property("name","standard_deviation","stypes",[1])
+@filter_none
 def _std(x:list):
     return _var(x)**(0.5)
 
 @set_property("name","uniqueCount","stypes",[0,1,2])
 @listify_type
+@filter_none
 def _uniqueCount(x:list):
     return len(set(x))
 
 @set_property("name","length","stypes",[0,1,2])
 @listify_type
+@filter_none
 def _len(x:list):
     return len(x)
 
 @set_property("name","duplicates_count","stypes",[0,1,2])
+@filter_none
 def _num_duplicates(x:list):
     return _len(x) - _uniqueCount(x)+1
 
 @set_property("name","flucturate_rate","stypes",[0,2])
 @listify_type
+@filter_none
 def _flucturate_rate(x:list,shift=1):
     x_shifted = _shift(x,shift)
     flucturate_vec = [xi1==xi2 for xi1,xi2 in zip(x[:-shift],x_shifted[:-shift])]
@@ -159,17 +186,20 @@ def _flucturate_rate(x:list,shift=1):
 
 @set_property("name","percentage_of_most_reoccuring_value_to_all_values","stypes",[1,2])
 @listify_type
+@filter_none
 def _percentage_of_most_reoccuring_value_to_all_values(x:list):
     x_freq_count = _appearance_count(x)
     return 1/len(x_freq_count)
 
 @set_property("name","percentage_of_most_reoocuring_value_to_all_datapoints","stypes",[1,2])
 @listify_type
+@filter_none
 def _percentage_of_most_reoocuring_value_to_all_datapoints(x:list):
     x_freq_count = _appearance_count(x)
     return max(x_freq_count.values()) / len(x)
 
 @set_property("name","last_location_of_max","stypes",[1])
+@filter_none
 def _last_location_of_max(x:list):
     xmax = _max(x)
     for i in range(1,len(x)+1):
@@ -177,6 +207,7 @@ def _last_location_of_max(x:list):
             return i
 
 @set_property("name","fist_location_of_max","stypes",[1])
+@filter_none
 def _first_location_of_max(x:list):
     xmax = _max(x)
     for i in range(len(x)):
@@ -184,6 +215,7 @@ def _first_location_of_max(x:list):
             return i
 
 @set_property("name","last_location_of_min","stypes",[1])
+@filter_none
 def _last_location_of_min(x:list):
     xmin = _min(x)
     for i in range(1,len(x)+1):
@@ -191,6 +223,7 @@ def _last_location_of_min(x:list):
             return i
 
 @set_property("name","fist_location_of_min","stypes",[1])
+@filter_none
 def _first_location_of_min(x:list):
     xmin = _min(x)
     for i in range(len(x)):
@@ -198,11 +231,13 @@ def _first_location_of_min(x:list):
             return i
 
 @set_property("name","ratio_value_number_to_seq_length","stypes",[1,2])
+@filter_none
 def _ratio_value_number_to_seq_length(x:list):
     return len(set(x))/_len(x)
 
 @set_property("name","number_peaks_1","stypes",[1])
 @listify_type
+@filter_none
 def _number_peaks(x,n=1):
     counter = 0
     for i in range(n,len(x)-n):
@@ -212,16 +247,19 @@ def _number_peaks(x,n=1):
     return counter
 
 @set_property("name","number_peaks_2","stypes",[1])
+@filter_none
 def _number_peaks2(x:list):
     return _number_peaks(x,2)
 
 
 @set_property("name","number_peaks_3","stypes",[1])
+@filter_none
 def _number_peaks3(x:list):
     return _number_peaks(x,3)
 
 @set_property("name", "skewness", "stypes", [1])
 @listify_type
+@filter_none
 def _skewness(x:list):
     avg = _mean(x)
     adjusted = [v - avg for v in x]
@@ -242,6 +280,7 @@ def _skewness(x:list):
 
 @set_property("name","kurtosis", "stypes", [1])
 @listify_type
+@filter_none
 def _kurtosis(x:list):
     avg = _mean(x)
     count = len(x)
@@ -264,6 +303,7 @@ def _kurtosis(x:list):
 
 @set_property("name","abs_energy","stypes",[1])
 @listify_type
+@filter_none
 def _abs_energy(x:list):
     """
       .. math::
@@ -274,6 +314,7 @@ def _abs_energy(x:list):
     return sum([xi**2 for xi in x])
 
 @set_property("name","cid_ce","stypes",[1])
+@filter_none
 def _cid_ce(x:list):
     """
     .. math::
@@ -288,12 +329,14 @@ def _cid_ce(x:list):
     return _abs_energy(x_z_transformed)**(0.5)
 
 @set_property("name","mean_change","stypes",[1])
+@filter_none
 def _mean_change(x):
     x_rolled = _shift(x,1)
     x_diff = [xi-xj for xi,xj in zip(x,x_rolled)]
     return _mean(x_diff)
 
 @set_property("name","min_change","stypes",[1])
+@filter_none
 def _mean_change(x):
     x_rolled = _shift(x,1)
     x_diff = [xi-xj for xi,xj in zip(x,x_rolled)]
@@ -301,6 +344,7 @@ def _mean_change(x):
 
 
 @set_property("name","_ndex_mass_quantile_25","stypes",[1])
+@filter_none
 def _index_mass_quantile(x:list,percentile = 0.25):
     quantile_value = sum(x)*percentile
     xlen = len(x)
@@ -313,17 +357,18 @@ def _index_mass_quantile(x:list,percentile = 0.25):
     return 0
 
 @set_property("name","ndex_mass_quantile_50","stypes",[1])
+@filter_none
 def _idnex_mass_quantile_50(x):
     return _index_mass_quantile(x,0.5)
 
 @set_property("name","ndex_mass_quantile_75","stypes",[1])
+@filter_none
 def _idnex_mass_quantile_75(x):
     return _index_mass_quantile(x,0.75)
 
-
-
 @set_property("name","categorical_max_freq_key_hash_code", "stypes", [2])
 @listify_type
+@filter_none
 def _categorical_max_freq_key_hash_code(x:list):
     x_freq_count = _appearance_count(x)
     x_max_freq_key = [xkey for xkey,xval in x_freq_count.items() if xval == max(x_freq_count.values())][0]
@@ -333,11 +378,16 @@ def _categorical_max_freq_key_hash_code(x:list):
 
 @set_property("name","categorical_min_freq_key_hash_code", "stypes", [2])
 @listify_type
+@filter_none
 def _categorical_min_freq_key_hash_code(x:list):
     x_freq_count = _appearance_count(x)
     x_min_freq_key = [xkey for xkey,xval in x_freq_count.items() if xval == max(x_freq_count.values())][0]
     return _token_hash(x_min_freq_key)
 
+@set_property("name","none_rate", "stypes",[2])
+@listify_type
+def _none_rate(x:list):
+    return len([a for a in x if a is not None])/len(x)
 
 
 #### TODO #####
