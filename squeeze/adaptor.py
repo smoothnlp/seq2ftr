@@ -58,7 +58,10 @@ class adapator():
                 if fname not in x_i:
                     # self.logger.warning("{} is not in every element of the input x.".format(fname))
                     continue
-                seqs[fname]['value'].append(_auto_xval_type_convert(x_i[fname]))
+                if x_i[fname] is not None:
+                    seqs[fname]['value'].append(_auto_xval_type_convert(x_i[fname]))
+                else:
+                    seqs[fname]['value'].append(None)
         return seqs
 
     def figure_val_ftrs(self,x_i:dict):
