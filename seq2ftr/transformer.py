@@ -7,7 +7,7 @@ __testdata__ = {
 from sklearn.base import TransformerMixin
 import pandas as pd
 import numpy as np
-import squeeze.feature_calculators as fc
+import seq2ftr.feature_calculators as fc
 import logging
 
 class SequenceTransformer(TransformerMixin):

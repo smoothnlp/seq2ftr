@@ -1,6 +1,6 @@
 import pytest
 
-import squeeze.feature_calculators as fc
+import seq2ftr.feature_calculators as fc
 
 def test_mean():
     print(fc._max([12,9,10]))
