@@ -1,20 +1,19 @@
 import setuptools
 
 setuptools.setup(
-    name="squeeze",
-    version="0.1",
-    author="Ruinan(Victor) Zhang",
-    author_email="ruinan.zhang@icloud.com",
+    name="seq2ftr",
+    version="0.1.5",
+    author="Ruinan(Victor) Zhang， YinJun(YJ)",
+    author_email="ruinan.zhang@icloud.com, yjun1989@gmail.com",
     description="A Nice and Convenient Feature Engineering Tool on Sequential Data",
-    long_description="",
-    long_description_content_type="text/markdown",
-    url="https://github.com/smoothnlp/Squeeze",
+    long_description='readme.rst',
+    long_description_content_type="",
+    url="https://github.com/smoothnlp/seq2ftr",
     packages=setuptools.find_packages(),
     install_requires=[
         'numpy',
         'pandas',
-        "sklearn",
-        "logging"
+        "sklearn"
       ],
     classifiers=[
         "Programming Language :: Python :: 3",
